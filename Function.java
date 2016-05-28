@@ -29,27 +29,8 @@ public class Function {
 		    returnBits += '0';
 		i--;
 	    }
-	    //   s_two[j]='\0';
 
 	    System.out.println(returnBits);
-	 
-	    // switch (numwidth){
-	    // case 4:
-	    // 	 returnBits = String.format("%04d ",num);
-	    // 	break;
-	    // case 8:
-	    // 	 returnBits = String.format("%08d ",num);
-	    // 	break;
-	    // case 16:
-	    // 	 returnBits = String.format("%016d ",num);
-	    // 	break;
-	    // case 32:
-	    // 	 returnBits = String.format("%032d ",num);
-	    // 	break;
-	    // default:
-	    // 	System.out.println("値が大きすぎます．");
-	    // 	break;
-	    // }
 	 
 	}catch (IOException e){
 	    System.out.println(e);
