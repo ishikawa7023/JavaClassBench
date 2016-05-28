@@ -20,7 +20,7 @@ public class ConvertHeader {
 
 		field = new String[] {"","","","","",""};
 
-		for(int j=0;j<6;j++){
+		for(int j=0;j<2;j++){
 		    two = new long[35];
 		    for(i=0;i<31;i++) {
 			two[i] = num[j]%2;
@@ -28,6 +28,45 @@ public class ConvertHeader {
 		    }
 		    two[i] = num[j];
 		    while(i>=0){
+			if(two[i]==1)
+			    field[j] += '1';
+			else
+			    field[j] += '0';
+			i--;
+		    }
+		}
+		for(int j=2;j<4;j++){
+		    two = new long[35];
+		    for(i=0;i<15;i++) {
+			two[i] = num[j]%2;
+			num[j] = num[j] >> 1;
+		    }
+		    two[i] = num[j];
+		    while(i>=0){
+			if(two[i]==1)
+			    field[j] += '1';
+			else
+			    field[j] += '0';
+			i--;
+		    }
+		}
+		for(int j=4;j<6;j++){
+		    two = new long[35];
+		    if(j==4){
+			for(i=0;i<7;i++) {
+			    two[i] = num[j]%2;
+			    num[j] = num[j] >> 1;
+			}
+			two[i] = num[j];
+		    }
+		    else{
+			for(i=0;i<31;i++) {
+			    two[i] = num[j]%2;
+			    num[j] = num[j] >> 1;
+			}
+			two[i] = num[j];
+		    }
+		    while(j==4 ? i>=0 : i>=16){
 			if(two[i]==1)
 			    field[j] += '1';
 			else
