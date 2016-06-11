@@ -3,6 +3,11 @@ import java.util.*;
 
 
 public class RangeToZOM {
+
+    int MAX_RANGE=65535;//任意のビット長の最大値
+    int BITS=Math.log(MAX_RANGE+1)/Math.log(2.0);
+    
+    
     public static void main(String[] args) {
 	//String fileName = "ret_file1.txt";
 	//	if(args.length>0){
@@ -12,68 +17,39 @@ public class RangeToZOM {
 
 	//Convert10to2 con = new Convert10to2();
 	BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-	List<String> list = new ArrayList<String>();
+	List<StringBuilder> origin_list = new ArrayList<StringBuilder>();
+
 	//FileReader fr;
 
-
 	try {
-	    String low = reader.readLine();
-	    String high = reader.readLine();
-	    int numl = Integer.parseInt(low);
-	    int origin=numl,pos;
-	    int numh = Integer.parseInt(high);
-	    String zoml = new String();
-	    String zomh = new String();
-	    int i=0,j=0;
+	    String s_low = reader.readLine();
+	    int low =  Integer.parseInt(s_low);
+	    String s_high = reader.readLine();
+	    int high =  Integer.parseInt(s_high);
+	   
+	    origin_list=rangeTozom(low,high);
 
-	    if(numl==0&&numh==65535)
-		list.add("****************");
-	    else if((numl & (numl-1))==0&&(numh&(numh+1))==0){
-		    
-		zomh=tenToTwo(numh,16);
-		while(numl!=(numh+1)){
-		    zoml=tenToTwo(numl,16);
-		    list.add(zoml);
-		    i++;
-		    numl=numl << 1;	
-		}
-		i--;
-		while(i>1){
-		    StringBuilder x = new StringBuilder(list.get(i));
-		    pos=x.indexOf("1");
-		    pos++;
-		    while(pos<16){    	
-			x.setCharAt(pos,'*');
-			pos++;		    
-		    }
-		    list.set(i,x.toString());
-		    i--;
-		}
+	      for(int i=0;i<origin_list.size();++i){
+		  System.out.println(origin_list.get(i));
 	    }
 	    
-	    else if(((numl+1)&numl)==0){
-		zoml=tenToTwo(numl,16);
-		
-			
-	    }
-	    else if(((numh+1)&numh)==0){
-
-
-
-	    }
-
-	    else{
-
-
-	    }
-	}catch (IOException e) {
-	    System.out.println("エラー");
+	}catch (IOException e){
+	    System.out.println(e);
 	}
     }
+	    
+    public static String tewTozom(String bit,int mask){
 
-    for(int i=0;)
-    println("");
-
+	StringBuilder sb = new StringBuilder(bit);
+	int num=BITS-mask;
+	
+	while(num<BITS){
+	    sb.setCharAt(num,'*');
+	    num++;
+	}
+	return sb.toString();
+    }
+    
     public static String tenToTwo(int num, int numwidth){
 	int[] two;
 	int i;
@@ -95,71 +71,100 @@ public class RangeToZOM {
 	return returnBits;
     }
     
-}
+public static List<StringBuilder> rangeTozom(int low,int high){
 
-
-void rangeTozom(int low,int high){
-
-    int MAX_RANGE=65535;
+    List<StringBuilder> list = new ArrayList<StringBuilder>();
 
     
-    if(low==high)
-      list.add(low);
-
-
-    else if((low&low(low-1))==0 && (high&(high+1))==0){//low=00010 : high=01111
-	if(low==0){
-	    num=log(high-low+1)/log(2);
-	    list.add(twoToZom(tenTotwo(32,high),num));
-	}
-	else if(low < 2^(int)(log(high)/log(2))){//一つの0，1，*のルールで表現できない時
-	    
-	    rangeTozom(low,2^(int)(log(high)/log(2))-1);//一つの0，1，*のルールで表現できる形に分ける
-	    rangeTozom(2^((int)(log(high)/log(2))),high);//一つの0，1，*のルールで表現できる形に分ける
-	    
-	}
-	else{//一つの0，1，*のルールで表現できる時
-	    num=log(high-low+1)/log(2);
-	    list.add(twoToZom(tenTotwo(32,high),num));	    
-	}
+    if(low==high){
+	list.add(low);
+	return list;
     }
+    // else if((low&(low-1))==0 && (high&(high+1))==0){//low=00010 : high=01111
+    else if(low==0 && (high&(high+1))==0){//lowが0でhighが２の累乗である時
+	num=(Math.log(high+1))/(Math.log(2.0));//numは後ろに付け加えられる*の数
+	list.add(twoToZom(tenTotwo(BITS,high),num));
+	return list;
+    }
+    else if(high <= MAX_RANGE/2){
 
-    else if((low|(low-1))==MAX_RANGE && (high|(high+1))==MAX_RANGE){//low=10000 : high=10111
-	if(high==MAX_RANGE){
-	    num=log(high+1-low)/log(2);
-	    list.add(twoToZom(tenTotwo(32,high),num));
+	if(low < 2^(Math.floor((Math.log(high)/Math.log(2.0))))){//一つの0，1，*のルールで表現できない時
+	    
+	    list=rangeTozom(low,2^(Math.floor(Math.log(high)/Math.log(2.0)))-1);//一つの0，1，*のルールで表現できる形に分ける
+	    int size=list.size();
+	    list.set(size,rangeTozom(2^(Math.floor((Math.log(high)/Math.log(2.0)))),high));//一つの0，1，*のルールで表現できる形に分ける
+	    
+	    return list; 
 	}
-	else if(low < 2^(int)(log(high)/log(2))){
-	    
-	    rangeTozom(low,2^(int)(log(high)/log(2))-1);
-	    rangeTozom(2^((int)(log(high)/log(2))),high);
-	    
+	else if(low == 2^(int)(Math.log(high)/Math.log(2.0))){//一つの0，1，*のルールで表現できる時
+	    num=(Math.log(high+1))/(Math.log(2.0));//numは後ろに付け加えられる*の数
+	   list.add(twoToZom(tenTotwo(BITS,high),num));	    
+	   return list;
 	}
 	else{
-	    num=log(high-low+1)/log(2);
-	    list.add(twoToZom(tenTotwo(32,high),num));	    
-	}
+	    
+	    int Ehigh=high-2^(Math.floor((Math.log(high)/Math.log(2.0))));
+	    int Elow=low-2^(Math.floor((Math.log(high)/Math.log(2.0))));;
+	    int pro=2^(Math.floor((Math.log(high)/Math.log(2.0))));
+	    StringBuilder sb = new StringBuilder();
+
+	    list=rangeTozom(Elow,Ehigh);
+	    for(int i=0;i<list.size();++i){
+		sb=list.get(i);
+		sb.setCharAt(BITS-(pro+1),'1');
+		list.set(i,sb);
+	    }
+	    return list;
+	}   
     }
 
+    else if(low > MAX_RANGE/2){
+	//   else if((low|(low-1))==MAX_RANGE && (high|(high+1))==MAX_RANGE){//low=10000 : high=10111
+	if((low|(low-1))==MAX_RANGE && high==MAX_RANGE){//highがMAX_RANGEでlowがMAX_RANGE-(2の累乗)である時
+	    num=Math.log(high+1-low)/Math.log(2.0);//numは後ろに付け加えられる*の数
+	    list.add(twoToZom(tenTotwo(BITS,high),num));
+	    return list;
+	}
+	else if(high > (2^(Math.floor(Math.log(low^MAX_RANGE)/Math.log(2.0))))^MAX_RANGE){//一つの0，1，*のルールで表現できない時
+	    
+	    list=rangeTozom(low,(2^(Math.floor(Math.log(low^MAX_RANGE)/Math.log(2.0))))^MAX_RANGE);
+	    int size =list.size();
+	    list.set(size,rangeTozom((2^(Math.floor(Math.log(low^MAX_RAMGE)/Math.log(2.0))))^MAX_RANGE)+1,high);
+
+	    return list;
+	    
+	}
+	else if(high == (2^(Math.floor(Math.log(low^MAX_RANGE)/Math.log(2.0))))^MAX_RANGE){//一つの0，1，*のルールで表現できる時
+	    num=Math.log(high-low+1)/Math.log(2.0);//numは後ろに付け加えられる*の数
+	    list.add(twoToZom(tenTotwo(BITS,high),num));
+	    return list;
+	}
+	else{
+
+	    int Ehigh=high-2^(Math.floor((Math.log(high)/Math.log(2.0))));
+	     int Elow=low-2^(Math.floor((Math.log(high)/Math.log(2.0))));
+	    int pro=2^(Math.floor((Math.log(high)/Math.log(2.0))));
+	    StringBuilder sb = new StringBuilder();
+
+	    list=rangeTozom(Elow,Ehigh);
+	    for(int i=0;i<list.size();++i){
+		sb=list.get(i);
+		sb.setCharAt(BITS-(pro+1),'1');
+		list.set(i,sb);
+	    }
+	    return list;
+	}   
+
+
+    }
+
+    else{
+	rangeTozom(low,MAX_RANGE/2);//一つの0，1，*のルールで表現できる形に分ける
+	rangeTozom((MAX_RANGE/2)+1,high);//一つの0，1，*のルールで表現できる形に分ける
+    }
     
-    else if(low < 2^(int)(log(high)/log(2))){
-	
-    rangeTozom(low,2^(int)(log(high)/log(2))-1);
-    rangeTozom(2^((int)(log(high)/log(2))),high);
-
-    }
-    else{//numは後ろに付け加える＊の数
-	int num,ban=0,bin=0;
-	num=log(high-low+1)/log(2);
-
-	while(num>=0){
-	    list.add(twoToZom(tenTotwo(32,high),num));
-	    high=high-2^num;
-	    num--;
-	}
-    }
-
-
+}
+    
 
 
 }
