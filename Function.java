@@ -1,6 +1,6 @@
 import java.io.*;
 
-public class Function {
+public class TenToTwo {
     public static void main(String[] args){
 	//public String tenTotwo(String num,int bit){
 	// String[] str = ipv4.split("/");
