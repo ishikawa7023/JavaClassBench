@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 
-public class ClassBenchToZOM {
+public class ClassBenchToZOM {//ClassBench形式のルールリストを0,1,*のルールリストに変える
     public static void main(String[] args){
 	
 	if (args.length != 2) {
@@ -13,29 +13,29 @@ public class ClassBenchToZOM {
 	try{
 	    List<String> origin_list = new ArrayList<String>();
 	    File input = new File(args[0]);
-	    BufferedReader br = new BufferedReader(new FileReader(input));
+	    BufferedReader br = new BufferedReader(new FileReader(input));//入力ファイル
 	    File output = new File(args[1]);
-	    BufferedWriter bw = new BufferedWriter(new FileWriter(output));
-	    String str;
-	    while((str = br.readLine()) != null){
+	    BufferedWriter bw = new BufferedWriter(new FileWriter(output));//出力ファイル
+	    String rule;
+	    while((rule = br.readLine()) != null){
 		List<String> slist = new ArrayList<String>();
 		List<String> dlist = new ArrayList<String>();
-		String[] result = str.split("\\s+|\\t");
+		String[] result = rule.split("\\s+|\\t");
 		StringBuilder sb = new StringBuilder(result[0]);
 		sb.deleteCharAt(0);
 		result[0]=sb.toString();
-		String SA = CIDRToZOM(result[0]);
-		String DA = CIDRToZOM(result[1]);
+		String SA = CIDRToZOM(result[0]);//0,1,*の送信元アドレス
+		String DA = CIDRToZOM(result[1]);//0,1,*の送信先アドレス
 		int[] sport = {Integer.parseInt(result[2]),Integer.parseInt(result[4])};
 		int[] dport = {Integer.parseInt(result[5]),Integer.parseInt(result[7])};
-		slist = RangeToZOM.rangeTozom(16,0,65535,sport[0],sport[1]);
-		dlist = RangeToZOM.rangeTozom(16,0,65535,dport[0],dport[1]);
-		String promask = prmsTozom(result[8]);
-		String flagmask = fgmsTozom(result[9]);
+		slist = RangeToZOM.rangeTozom(16,0,65535,sport[0],sport[1]);//送信元ポートレンジ（0,1,*のリスト）
+		dlist = RangeToZOM.rangeTozom(16,0,65535,dport[0],dport[1]);//送信先ポートレンジ（0,1,*のリスト）
+		String promask = prmsTozom(result[8]);//プロトコルとマスク
+		String flagmask = fgmsTozom(result[9]);//フラグとマスク
 		
 		for(String sp : slist){
 		    for(String dp : dlist){
-			origin_list.add(SA +" "+ DA +" "+ sp +" "+ dp +" "+ promask +" "+ flagmask);
+			origin_list.add(SA + DA + sp + dp + promask + flagmask);
 		    }
 		}		
 		
@@ -89,21 +89,21 @@ public class ClassBenchToZOM {
 	return returnBits;
     }
 
-public static String CIDRToZOM(String CIDR)
-{
-    String[] ZO = CIDR.split("\\.|/") ;
-  int i; 
+    public static String CIDRToZOM(String CIDR)
+    {
+	String[] ZO = CIDR.split("\\.|/") ;
+	int i; 
 
-  for(i=0;i<4;i++){
-      ZO[i]=tenTotwo(Integer.parseInt(ZO[i]),8);   
-  }
-  StringBuilder ZOM = new StringBuilder(ZO[0] + ZO[1] + ZO[2] + ZO[3]);
-  int plefix=Integer.parseInt(ZO[4]);
+	for(i=0;i<4;i++){
+	    ZO[i]=tenTotwo(Integer.parseInt(ZO[i]),8);   
+	}
+	StringBuilder ZOM = new StringBuilder(ZO[0] + ZO[1] + ZO[2] + ZO[3]);
+	int plefix=Integer.parseInt(ZO[4]);
 
-  while(plefix < 32){
-      ZOM.setCharAt(plefix,'*');
-      plefix++;
-  }
-  return ZOM.toString();
-}
+	while(plefix < 32){
+	    ZOM.setCharAt(plefix,'*');
+	    plefix++;
+	}
+	return ZOM.toString();
+    }
 }
