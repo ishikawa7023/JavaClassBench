@@ -45,7 +45,10 @@ case "$FIELD" in
 esac
 echo "input ZeroOneMask file name"
 read ZOMNAME
-java ClassBenchToZOM x $ZOMNAME
+java ClassBenchToZOM x a
 echo "input ZeroOneHeader file name"
 read HEADERNAME
-java ZOHeaderFromClassbench y $HEADERNAME
+java ZOHeaderFromClassbench y b
+
+tr -d ' ' < a > $ZOMNAME
+tr -d ' ' < b > $HEADERNAME
