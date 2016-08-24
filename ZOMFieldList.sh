@@ -46,3 +46,5 @@ esac
 echo "input ZeroOneMask file name"
 read ZOMNAME
 java ClassBenchToZOM x $ZOMNAME
+echo "input ZeroOneMask header name"
+read HEADERNAME
