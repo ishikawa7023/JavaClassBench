@@ -25,7 +25,6 @@ public class ZOHeaderFromClassbench {
 	    
 	     while((rule = br.readLine()) != null){
 		 String[] result = rule.split("\\s+|\\t+");
-		 result[0] = result[0].substring(1);
 		 
 		 // StringBuilder sb = new StringBuilder(result[0]);
 		 // sb.deleteCharAt(0);
