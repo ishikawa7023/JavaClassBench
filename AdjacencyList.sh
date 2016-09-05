@@ -11,8 +11,8 @@ read HEADERNUM
 cd ../trace_generator
 ./trace_generator 1 0.1 `expr $HEADERNUM / $RULENUM` ../db_generator/MyFilters
 cd ..
-#echo "input rule name"
-#read RULENAME 
+echo "input rule name"
+read RULENAME 
 case "$FIELD" in 
     "1") cat db_generator/MyFilters | awk -F'\t' 'BEGIN{OFS="\t"} {print $1}' > x
 	 ;;
@@ -27,28 +27,27 @@ case "$FIELD" in
     "6") cat db_generator/MyFilters | awk -F'\t' 'BEGIN{OFS="\t"} {print $1,$2,$3,$4,$5,$6}' > x
 	 ;;
 esac
-#echo "input header name"
-#read HEADERNAME
+echo "input header name"
+read HEADERNAME
 case "$FIELD" in 
-    "1") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1}' > y
+    "1") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1}' > $HEADERNAME
 	 ;;
-    "2") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1,$2}' > y
+    "2") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1,$2}' > $HEADERNAME
 	 ;;
-    "3") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1,$2,$3}' > y
+    "3") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1,$2,$3}' > $HEADERNAME
          ;;
-    "4") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,$4}' > y
+    "4") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,$4}' > $HEADERNAME
 	 ;;
-    "5") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,$4,$5}' > y
+    "5") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,$4,$5}' > $HEADERNAME
 	 ;;
-    "6") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,$4,$5,$6}' > y
+    "6") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,$4,$5,$6}' > $HEADERNAME
 	 ;;
 esac
-echo "input ZeroOneMask file name"
-read ZOMNAME
-java ClassBenchToZOM x $ZOMNAME
-echo "input ZeroOneHeader file name"
-read HEADERNAME
-java ZOHeaderFromClassbench y $HEADERNAME
+
+echo "input probability of evaluation type (0 <= p <=1)"
+read PROBABILITY
+java AddEtype x a $PROBABILITY
+java ClassBenchToAdjacencyList a $HEADERNAME $FIELD  $RULENAME
 
 rm x
-rm y
+rm a

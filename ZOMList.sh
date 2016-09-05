@@ -52,3 +52,8 @@ java ZOHeaderFromClassbench y b
 
 tr -d ' ' < a > $ZOMNAME
 tr -d ' ' < b > $HEADERNAME
+
+rm x
+rm y
+rm a
+rm b

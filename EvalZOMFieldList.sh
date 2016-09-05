@@ -27,8 +27,7 @@ case "$FIELD" in
     "6") cat db_generator/MyFilters | awk -F'\t' 'BEGIN{OFS="\t"} {print $1,$2,$3,$4,$5,$6}' > x
 	 ;;
 esac
-#echo "input header name"
-#read HEADERNAME
+
 case "$FIELD" in 
     "1") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1}' > y
 	 ;;
@@ -43,12 +42,20 @@ case "$FIELD" in
     "6") cat db_generator/MyFilters_trace | awk 'BEGIN{OFS="\t"} {print $1,$2,$3,$4,$5,$6}' > y
 	 ;;
 esac
+
 echo "input ZeroOneMask file name"
 read ZOMNAME
-java ClassBenchToZOM x $ZOMNAME
+java ClassBenchToZOM x a
 echo "input ZeroOneHeader file name"
 read HEADERNAME
 java ZOHeaderFromClassbench y $HEADERNAME
 
+java AddEvaluationZOM a $HEADERNAME e
+echo "input probability of evaluation type (0 <= p <= 1)"
+read PROBABILITY
+java AddEtype e $ZOMNAME $PROBABILITY
+
 rm x
 rm y
+rm a
+rm e
